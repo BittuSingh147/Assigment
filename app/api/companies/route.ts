@@ -12,6 +12,7 @@ export async function GET() {
     })
     return NextResponse.json(companies)
   } catch (error) {
+    console.error('Error fetching companies:', error) // Log the error
     return NextResponse.json({ error: 'Error fetching companies' }, { status: 500 })
   }
 }
