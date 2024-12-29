@@ -46,17 +46,24 @@ async function main() {
 
   for (const company of companies) {
     const { directors, ...companyData } = company
-    const createdCompany = await prisma.company.create({
-      data: companyData,
-    })
-
-    for (const director of directors) {
-      await prisma.director.create({
-        data: {
-          ...director,
-          companyId: createdCompany.id,
-        },
+    
+    try {
+      const createdCompany = await prisma.company.create({
+        data: companyData,
       })
+
+      for (const director of directors) {
+        await prisma.director.create({
+          data: {
+            ...director,
+            companyId: createdCompany.id,
+          },
+        })
+      }
+      
+      console.log(`Created company: ${company.name}`)
+    } catch (error) {
+      console.error(`Error creating company ${company.name}:`, error)
     }
   }
 }

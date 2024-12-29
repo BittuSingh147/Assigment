@@ -1,7 +1,6 @@
-import { NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
-
-const prisma = new PrismaClient()
+// app/api/companies/route.ts
+import { NextResponse } from 'next/server';
+import prisma from '@/lib/prisma';
 
 export async function GET() {
   try {
@@ -9,10 +8,20 @@ export async function GET() {
       include: {
         directors: true,
       },
-    })
-    return NextResponse.json(companies)
+    });
+    
+    return NextResponse.json({ companies });
+
   } catch (error) {
-    console.error('Error fetching companies:', error) // Log the error
-    return NextResponse.json({ error: 'Error fetching companies' }, { status: 500 })
+    // Proper error logging
+    if (error instanceof Error) {
+      console.error('Database Error:', error.message);
+    }
+    
+    // Return a properly formatted error response
+    return NextResponse.json(
+      { error: 'Internal Server Error', message: 'Failed to fetch companies' },
+      { status: 500 }
+    );
   }
 }
